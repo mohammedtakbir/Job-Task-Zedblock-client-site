@@ -3,14 +3,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const Task = ({ task, setRefetch, refetch }) => {
-    const { title, status } = task;
-    const [checked, setChecked] = useState(JSON.parse(status));
+    const { title, status, _id } = task;
+    const [checked, setChecked] = useState(status);
 
     const user = JSON.parse(localStorage.getItem('user'));
 
     const handleStatusChange = (value) => {
         fetch(`http://localhost:5000/status?status=${value}`, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'content-type': 'application/json'
             },
@@ -18,7 +18,6 @@ const Task = ({ task, setRefetch, refetch }) => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
                 setRefetch(!refetch)
             })
         setChecked(value);
@@ -28,13 +27,13 @@ const Task = ({ task, setRefetch, refetch }) => {
         <>
             <tr>
                 <td>
-                    <Link to='/details'>{title}</Link>
+                    <Link to={`/details/${_id}`}>{title}</Link>
                 </td>
                 <td>
                     <label>
                         <input
                             onClick={() => handleStatusChange(!checked)}
-                            type="checkbox" className="checkbox" checked={status === 'true' ? true : false}
+                            type="checkbox" className="checkbox" checked={status && true}
                         />
                     </label>
                 </td>

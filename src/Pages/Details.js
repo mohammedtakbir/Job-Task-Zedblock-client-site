@@ -1,9 +1,45 @@
+import { useQuery } from '@tanstack/react-query';
 import React from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 const Details = () => {
+    const { id } = useParams();
+    const user = JSON.parse(localStorage.getItem('user'));
+    const navigate = useNavigate();
+
+    const { data: task = {}, isLoading, refetch } = useQuery({
+        queryKey: ['get-task'],
+        queryFn: () => fetch(`http://localhost:5000/get-task?id=${id}&name=${user.name}&password=${user.password}`)
+            .then(res => res.json())
+    })
+
+    if (isLoading) {
+        return <p>Loading...</p>
+    }
+
+    const { title, description, _id } = task;
+
+    const handleDeleteTask = (id) => {
+        fetch(`http://localhost:5000/delete-task?id=${id}&name=${user.name}&password=${user.password}`, {
+            method: 'DELETE'
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.deletedCount) {
+                    refetch();
+                    navigate('/tasks');
+                }
+            })
+    }
+
     return (
-        <div>
-            details
+        <div className='max-w-[400px] mx-auto border p-4 rounded-lg'>
+            <h3 className='text-xl font-semibold mb-3'>{title}</h3>
+            <p className='mb-4 text-sm'>{description}</p>
+            <div>
+                <button onClick={() => handleDeleteTask(_id)} className='text-red-500 underline inline-block mr-5'>Delete</button>
+                <Link to='/edit-task' className='text-green-500 underline inline-block'>Edit</Link>
+            </div>
         </div>
     );
 };

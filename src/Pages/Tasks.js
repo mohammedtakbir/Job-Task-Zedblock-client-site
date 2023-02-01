@@ -7,16 +7,20 @@ import Task from './Task';
 const Tasks = () => {
     const [tasks, setTasks] = useState([]);
     const [refetch, setRefetch] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const user = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
+        setLoading(true);
         fetch(`http://localhost:5000/get-tasks?name=${user.name}&password=${user.password}`)
             .then(res => res.json())
             .then(data => {
+                setLoading(false)
                 setTasks(data);
             })
-    }, [user.name, user.password, refetch]);
+            .catch(err => setLoading(false));
+    }, [user?.name, user?.password, refetch]);
 
     return (
         <div className='max-w-[800px] mx-auto'>
@@ -68,7 +72,6 @@ const Tasks = () => {
                     </div>
                 </div>
                 <div className="overflow-x-auto w-[70%]">
-                    {/*  */}
                     <table className="table w-full">
                         <thead>
                             <tr>
@@ -77,11 +80,12 @@ const Tasks = () => {
                                 <th>Details</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {
-                                tasks.map(task => <Task setRefetch={setRefetch} refetch={refetch} task={task} />)
-                            }
-                        </tbody>
+                        {loading ? '' :
+                            <tbody>
+                                {
+                                    tasks.map(task => <Task setRefetch={setRefetch} refetch={refetch} task={task} />)
+                                }
+                            </tbody>}
                     </table>
                 </div>
             </div>

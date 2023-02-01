@@ -37,7 +37,7 @@ export const router = createBrowserRouter([
                 element: <Details />
             },
             {
-                path: '/edit-task',
+                path: '/edit-task/:id',
                 element: <EditTask />
             },
         ]

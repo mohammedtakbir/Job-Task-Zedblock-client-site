@@ -1,26 +1,22 @@
+import { useQuery } from '@tanstack/react-query';
 import React from 'react';
-import { useEffect } from 'react';
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Task from './Task';
 
 const Tasks = () => {
-    const [tasks, setTasks] = useState([]);
-    const [refetch, setRefetch] = useState(false);
-    const [loading, setLoading] = useState(false);
-
     const user = JSON.parse(localStorage.getItem('user'));
 
-    useEffect(() => {
-        setLoading(true);
-        fetch(`http://localhost:5000/get-tasks?name=${user.name}&password=${user.password}`)
+    const { data: tasks = [], isLoading, refetch } = useQuery({
+        queryKey: [''],
+        queryFn: () => fetch(`http://localhost:5000/get-tasks?name=${user.name}&password=${user.password}`)
             .then(res => res.json())
-            .then(data => {
-                setLoading(false)
-                setTasks(data);
-            })
-            .catch(err => setLoading(false));
-    }, [user?.name, user?.password, refetch]);
+    })
+
+    
+
+    if (isLoading) {
+        return <p className='text-2xl flex justify-center'>Loading...</p>
+    }
 
     return (
         <div className='max-w-[800px] mx-auto'>
@@ -57,7 +53,7 @@ const Tasks = () => {
                             <Link to='/add-task' className='underline text-blue-500'>Add Task</Link>
                         </div>
                         <div>
-                            <Link to='' className='underline text-blue-500'>Remove all tasks</Link>
+                            <Link  to='' className='underline text-blue-500'>Remove all tasks</Link>
                         </div>
                         <div className='flex items-center ml-5'>
                             <select
@@ -80,12 +76,11 @@ const Tasks = () => {
                                 <th>Details</th>
                             </tr>
                         </thead>
-                        {loading ? '' :
-                            <tbody>
-                                {
-                                    tasks.map(task => <Task setRefetch={setRefetch} refetch={refetch} task={task} />)
-                                }
-                            </tbody>}
+                        <tbody>
+                            {
+                                tasks.map(task => <Task refetch={refetch} task={task} />)
+                            }
+                        </tbody>
                     </table>
                 </div>
             </div>

@@ -2,14 +2,14 @@ import React from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const Task = ({ task, setRefetch, refetch }) => {
+const Task = ({ task, refetch }) => {
     const { title, status, _id } = task;
     const [checked, setChecked] = useState(status);
 
     const user = JSON.parse(localStorage.getItem('user'));
 
-    const handleStatusChange = (value) => {
-        fetch(`http://localhost:5000/status?status=${value}`, {
+    const handleStatusChange = (id, value) => {
+        fetch(`http://localhost:5000/status?id=${id}&state=${value}`, {
             method: 'PUT',
             headers: {
                 'content-type': 'application/json'
@@ -18,7 +18,9 @@ const Task = ({ task, setRefetch, refetch }) => {
         })
             .then(res => res.json())
             .then(data => {
-                setRefetch(!refetch)
+                if (data.modifiedCount) {
+                    refetch();
+                }
             })
         setChecked(value);
     }
@@ -32,13 +34,13 @@ const Task = ({ task, setRefetch, refetch }) => {
                 <td>
                     <label>
                         <input
-                            onClick={() => handleStatusChange(!checked)}
-                            type="checkbox" className="checkbox" checked={status && true}
+                            onClick={() => handleStatusChange(_id, !checked)}
+                            type="checkbox" className="checkbox" checked={checked && true}
                         />
                     </label>
                 </td>
                 <td>
-                    <Link to='/details' className="underline text-blue-500">details</Link>
+                    <Link to={`/details/${_id}`} className="underline text-blue-500">details</Link>
                 </td>
             </tr>
         </>

@@ -14,7 +14,7 @@ const Details = () => {
     })
 
     if (isLoading) {
-        return <p>Loading...</p>
+        return <p className='flex justify-center text-2xl'>Loading...</p>
     }
 
     const { title, description, _id } = task;
@@ -38,7 +38,7 @@ const Details = () => {
             <p className='mb-4 text-sm'>{description}</p>
             <div>
                 <button onClick={() => handleDeleteTask(_id)} className='text-red-500 underline inline-block mr-5'>Delete</button>
-                <Link to='/edit-task' className='text-green-500 underline inline-block'>Edit</Link>
+                <Link to={`/edit-task/${_id}`} className='text-green-500 underline inline-block'>Edit</Link>
             </div>
         </div>
     );

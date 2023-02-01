@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const Task = ({ task, refetch }) => {
+const Task = ({ task, refetch, setRefetch }) => {
     const { title, status, _id } = task;
     const [checked, setChecked] = useState(status);
 
@@ -19,7 +19,7 @@ const Task = ({ task, refetch }) => {
             .then(res => res.json())
             .then(data => {
                 if (data.modifiedCount) {
-                    refetch();
+                    setRefetch(!refetch)
                 }
             })
         setChecked(value);

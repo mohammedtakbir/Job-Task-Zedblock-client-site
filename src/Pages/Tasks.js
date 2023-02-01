@@ -1,19 +1,37 @@
-import { useQuery } from '@tanstack/react-query';
 import React from 'react';
+import { useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Task from './Task';
 
 const Tasks = () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
-    const { data: tasks = [], isLoading, refetch } = useQuery({
-        queryKey: [''],
-        queryFn: () => fetch(`http://localhost:5000/get-tasks?name=${user.name}&password=${user.password}`)
+    const [tasks, setTasks] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [refetch, setRefetch] = useState(false);
+
+    useEffect(() => {
+        setIsLoading(true);
+        fetch(`http://localhost:5000/get-tasks?name=${user.name}&password=${user.password}`)
             .then(res => res.json())
-    })
+            .then(data => {
+                setTasks(data);
+                setIsLoading(false);
+            })
+            .catch(err => setIsLoading(false))
+    }, [user.name, user.password, refetch])
 
-    
+    const handleRemoveAllTasks = () => {
+        fetch(`http://localhost:5000/remove-completed-tasks`)
+            .then(res => res.json())
+            .then(data => {
+                setTasks(data);
+                setRefetch(!refetch);
+            })
+    }
 
+   
     if (isLoading) {
         return <p className='text-2xl flex justify-center'>Loading...</p>
     }
@@ -46,28 +64,29 @@ const Tasks = () => {
                 </form>
             </div>
             <div className='flex gap-5'>
-                <div className='w-[30%] border p-4 shadow-lg rounded-md h-[160px] sticky top-0'>
+                <div className='w-[40%] border p-4 shadow-lg rounded-md h-[190px] sticky top-0'>
                     <p className='mb-5 text-center font-semibold'>Action Menu</p>
                     <div className='flex flex-wrap justify-center gap-5'>
                         <div>
                             <Link to='/add-task' className='underline text-blue-500'>Add Task</Link>
                         </div>
                         <div>
-                            <Link  to='' className='underline text-blue-500'>Remove all tasks</Link>
+                            <Link onClick={handleRemoveAllTasks} to='' className='underline text-blue-500'>Remove completed tasks</Link>
                         </div>
                         <div className='flex items-center ml-5'>
                             <select
+                                
                                 id="countries"
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-1"
                             >
                                 <option value='all'>All</option>
-                                <option value='active'>Active</option>
-                                <option value='completed'>Completed</option>
+                                <option value={false}>Active</option>
+                                <option value={true}>Completed</option>
                             </select>
                         </div>
                     </div>
                 </div>
-                <div className="overflow-x-auto w-[70%]">
+                <div className="overflow-x-auto w-[60%]">
                     <table className="table w-full">
                         <thead>
                             <tr>
@@ -78,7 +97,7 @@ const Tasks = () => {
                         </thead>
                         <tbody>
                             {
-                                tasks.map(task => <Task refetch={refetch} task={task} />)
+                                tasks.map(task => <Task refetch={refetch} setRefetch={setRefetch} task={task} />)
                             }
                         </tbody>
                     </table>

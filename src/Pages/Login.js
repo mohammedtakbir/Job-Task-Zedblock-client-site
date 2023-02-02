@@ -27,7 +27,8 @@ const Login = () => {
             .then(data => {
                 if (data.user) {
                     localStorage.setItem('user', JSON.stringify(data.user))
-                    navigate('/tasks')
+                    navigate('/tasks');
+                    window.location.reload();
                     return toast.success('Login successfully');
                 }
                 toast.error(data.message);

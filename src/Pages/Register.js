@@ -27,6 +27,7 @@ const Register = () => {
                 if (data.user) {
                     localStorage.setItem('user', JSON.stringify(data.user))
                     navigate('/tasks');
+                    window.location.reload();
                     return toast.success('Register successfully');
                 }
                 toast.error(data.message);

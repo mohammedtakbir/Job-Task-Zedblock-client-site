@@ -10,6 +10,7 @@ const Tasks = () => {
     const [tasks, setTasks] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [refetch, setRefetch] = useState(false);
+    const [noTask, setNoTask] = useState('');
 
     useEffect(() => {
         setIsLoading(true);
@@ -36,20 +37,26 @@ const Tasks = () => {
         fetch(`http://localhost:5000/tasks-sorting?sortValue=${value}&name=${user.name}&password=${user.password}`)
             .then(res => res.json())
             .then(data => {
+                if (data.length === 0) {
+                    setNoTask('No Task Found');
+                }
                 setTasks(data);
             })
-        /* if (value === 'true') {
-            const completedTask = tasks.filter(task => task.status === true)
-            setTasks(completedTask);
-            console.log(completedTask)
-        } else if (value === 'false') {
-            const activeTasks = tasks.filter(task => task.status === false);
-            setTasks(activeTasks);
-            console.log(activeTasks)
-        } else if (value === 'all') {
-            setTasks(tasks);
-            console.log(tasks)
-        } */
+    }
+
+    //* search by title
+    const handleSearchByTitle = (e) => {
+        e.preventDefault();
+        const searchText = e.target.search.value;
+
+        fetch(`http://localhost:5000/task-search?searchText=${searchText}&name=${user?.name}&password=${user?.password}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.length === 0) {
+                    setNoTask('No Task Found');
+                }
+                setTasks(data);
+            })
     }
 
 
@@ -61,7 +68,7 @@ const Tasks = () => {
     return (
         <div className='max-w-[800px] mx-auto'>
             <div className='flex justify-end'>
-                <form className='w-[400px] flex gap-2 mb-3'>
+                <form className='w-[400px] flex gap-2 mb-3' onSubmit={handleSearchByTitle}>
                     <div className="relative w-[350px]">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                             <svg aria-hidden="true" className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -71,7 +78,7 @@ const Tasks = () => {
                             id="default-search"
                             name='search'
                             className="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-gray-500 focus:border-gray-500"
-                            placeholder="Search task"
+                            placeholder="Search by title"
                             required
                         />
                     </div>
@@ -118,7 +125,8 @@ const Tasks = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {
+                            {tasks.length === 0 ?
+                                <p className='mt-2 text-xl font-semibold'>{noTask}</p> :
                                 tasks.map(task => <Task refetch={refetch} setRefetch={setRefetch} task={task} />)
                             }
                         </tbody>

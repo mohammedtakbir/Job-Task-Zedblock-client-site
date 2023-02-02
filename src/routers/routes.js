@@ -3,6 +3,7 @@ import Main from "../layout/Main";
 import AddTask from "../Pages/AddTask";
 import Details from "../Pages/Details";
 import EditTask from "../Pages/EditTask";
+import ErrorPage from "../Pages/ErrorPage";
 import Login from "../Pages/Login";
 import Register from "../Pages/Register";
 import Tasks from "../Pages/Tasks";
@@ -11,6 +12,7 @@ export const router = createBrowserRouter([
     {
         path: '/',
         element: <Main />,
+        errorElement: <ErrorPage />,
         children: [
             {
                 index: true,

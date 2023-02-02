@@ -13,14 +13,15 @@ const Tasks = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        fetch(`http://localhost:5000/get-tasks?name=${user.name}&password=${user.password}`)
+        fetch(`http://localhost:5000/get-tasks?name=${user?.name}&password=${user?.password}`)
             .then(res => res.json())
             .then(data => {
                 setTasks(data);
                 setIsLoading(false);
             })
             .catch(err => setIsLoading(false))
-    }, [user.name, user.password, refetch])
+    }, [user.name, user.password, refetch]);
+
 
     const handleRemoveAllTasks = () => {
         fetch(`http://localhost:5000/remove-completed-tasks`)
@@ -31,7 +32,28 @@ const Tasks = () => {
             })
     }
 
-   
+    const handleSortTaskStatus = (value) => {
+        fetch(`http://localhost:5000/tasks-sorting?sortValue=${value}&name=${user.name}&password=${user.password}`)
+            .then(res => res.json())
+            .then(data => {
+                setTasks(data);
+            })
+        /* if (value === 'true') {
+            const completedTask = tasks.filter(task => task.status === true)
+            setTasks(completedTask);
+            console.log(completedTask)
+        } else if (value === 'false') {
+            const activeTasks = tasks.filter(task => task.status === false);
+            setTasks(activeTasks);
+            console.log(activeTasks)
+        } else if (value === 'all') {
+            setTasks(tasks);
+            console.log(tasks)
+        } */
+    }
+
+
+
     if (isLoading) {
         return <p className='text-2xl flex justify-center'>Loading...</p>
     }
@@ -75,7 +97,7 @@ const Tasks = () => {
                         </div>
                         <div className='flex items-center ml-5'>
                             <select
-                                
+                                onChange={(e) => handleSortTaskStatus(e.target.value)}
                                 id="countries"
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-1"
                             >

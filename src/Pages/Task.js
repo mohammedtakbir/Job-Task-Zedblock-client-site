@@ -25,6 +25,7 @@ const Task = ({ task, refetch, setRefetch }) => {
         setChecked(value);
     }
 
+
     return (
         <>
             <tr>

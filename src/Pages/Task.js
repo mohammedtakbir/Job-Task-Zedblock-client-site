@@ -9,7 +9,7 @@ const Task = ({ task, refetch, setRefetch }) => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     const handleStatusChange = (id, value) => {
-        fetch(`http://localhost:5000/status?id=${id}&state=${value}`, {
+        fetch(`https://job-task-zedblock.vercel.app/status?id=${id}&state=${value}`, {
             method: 'PUT',
             headers: {
                 'content-type': 'application/json'
@@ -19,7 +19,7 @@ const Task = ({ task, refetch, setRefetch }) => {
             .then(res => res.json())
             .then(data => {
                 if (data.modifiedCount) {
-                    setRefetch(!refetch)
+                    // setRefetch(!refetch)
                 }
             })
         setChecked(value);

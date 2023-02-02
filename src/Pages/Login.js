@@ -16,7 +16,7 @@ const Login = () => {
             password
         };
 
-        fetch(`http://localhost:5000/login`, {
+        fetch(`https://job-task-zedblock.vercel.app/login`, {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',

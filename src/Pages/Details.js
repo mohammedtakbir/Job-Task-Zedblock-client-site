@@ -9,18 +9,14 @@ const Details = () => {
 
     const { data: task = {}, isLoading, refetch } = useQuery({
         queryKey: ['get-task'],
-        queryFn: () => fetch(`http://localhost:5000/get-task?id=${id}&name=${user.name}&password=${user.password}`)
+        queryFn: () => fetch(`https://job-task-zedblock.vercel.app/get-task?id=${id}&name=${user.name}&password=${user.password}`)
             .then(res => res.json())
     })
-
-    if (isLoading) {
-        return <p className='flex justify-center text-2xl'>Loading...</p>
-    }
 
     const { title, description, _id } = task;
 
     const handleDeleteTask = (id) => {
-        fetch(`http://localhost:5000/delete-task?id=${id}&name=${user.name}&password=${user.password}`, {
+        fetch(`https://job-task-zedblock.vercel.app/delete-task?id=${id}&name=${user.name}&password=${user.password}`, {
             method: 'DELETE'
         })
             .then(res => res.json())
@@ -32,15 +28,21 @@ const Details = () => {
             })
     }
 
+    if (isLoading) {
+        return <p className='flex justify-center text-2xl'>Loading...</p>
+    }
+
     return (
-        <div className='max-w-[400px] mx-auto border p-4 rounded-lg'>
-            <h3 className='text-xl font-semibold mb-3'>{title}</h3>
-            <p className='mb-4 text-sm'>{description}</p>
-            <div>
-                <button onClick={() => handleDeleteTask(_id)} className='text-red-500 underline inline-block mr-5'>Delete</button>
-                <Link to={`/edit-task/${_id}`} className='text-green-500 underline inline-block'>Edit</Link>
+        <>
+            <div className='max-w-[400px] mx-auto border p-4 rounded-lg'>
+                <h3 className='text-xl font-semibold mb-3'>{title}</h3>
+                <p className='mb-4 text-sm'>{description}</p>
+                <div>
+                    <button onClick={() => handleDeleteTask(_id)} className='text-red-500 underline inline-block mr-5'>Delete</button>
+                    <Link to={`/edit-task/${_id}`} className='text-green-500 underline inline-block'>Edit</Link>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

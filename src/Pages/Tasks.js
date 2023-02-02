@@ -14,9 +14,12 @@ const Tasks = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        fetch(`http://localhost:5000/get-tasks?name=${user?.name}&password=${user?.password}`)
+        fetch(`https://job-task-zedblock.vercel.app/get-tasks?name=${user?.name}&password=${user?.password}`)
             .then(res => res.json())
             .then(data => {
+                if (data.length === 0) {
+                    setNoTask('No Task Found');
+                }
                 setTasks(data);
                 setIsLoading(false);
             })
@@ -25,7 +28,7 @@ const Tasks = () => {
 
 
     const handleRemoveAllTasks = () => {
-        fetch(`http://localhost:5000/remove-completed-tasks`)
+        fetch(`https://job-task-zedblock.vercel.app/remove-completed-tasks?name=${user?.name}&password=${user?.password}`)
             .then(res => res.json())
             .then(data => {
                 setTasks(data);
@@ -34,7 +37,7 @@ const Tasks = () => {
     }
 
     const handleSortTaskStatus = (value) => {
-        fetch(`http://localhost:5000/tasks-sorting?sortValue=${value}&name=${user.name}&password=${user.password}`)
+        fetch(`https://job-task-zedblock.vercel.app/tasks-sorting?sortValue=${value}&name=${user.name}&password=${user.password}`)
             .then(res => res.json())
             .then(data => {
                 if (data.length === 0) {
@@ -49,7 +52,7 @@ const Tasks = () => {
         e.preventDefault();
         const searchText = e.target.search.value;
 
-        fetch(`http://localhost:5000/task-search?searchText=${searchText}&name=${user?.name}&password=${user?.password}`)
+        fetch(`https://job-task-zedblock.vercel.app/task-search?searchText=${searchText}&name=${user?.name}&password=${user?.password}`)
             .then(res => res.json())
             .then(data => {
                 if (data.length === 0) {
